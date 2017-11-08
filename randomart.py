@@ -2,30 +2,36 @@ import math
 from PIL import Image
 from PIL import ImageDraw
 
-def MakeArt(size):
+def MakeArt(size, num_circles):
     xpixels = int(math.sqrt(size))
     ypixels = xpixels
+    circle_width = float(xpixels) / (num_circles * 2)
 
     #create image
     im = Image.new('RGB', (xpixels, ypixels))
     draw = ImageDraw.Draw(im)
 
+    in_circle = True
+    circle_pixel_count = 0
+    circle_pixel_width = 10
     print xpixels
     for x in range(xpixels):
         for y in range(ypixels):
-            u = float(x) / float(xpixels)
-            v = float(y) / float(ypixels)
-            (r, g, b) = (u, v, 1)
-            rval = int(256*r)
-            gval = int(256*g)
-            bval = int(256*b)
-            print "u: " + str(u) + " v: " + str(v)
-            print "r: " + str(rval) + " g: " + str(gval) + " b: " + str(bval)
-            draw.point([(x,y)],fill=(rval, gval, bval))
+            (r,g,b) = (int(0), int(0), int(0))
+            if in_circle :
+                (r,g,b) = (int(256), int(256), int(256))
+
+            circle_pixel_count += 1
+            if circle_pixel_count == circle_pixel_width:
+                in_circle = not in_circle
+                circle_pixel_count = 0
+            print "x: {0}, y: {1}".format(x,y)
+            print "r: {0}, g: {1}, b: {2}".format(r,g,b)
+            draw.point([(x,y)],fill=(r,g,b))
 
     outstr = "test.png"
     im.save(outstr, "PNG")
 
 
 # Main program
-MakeArt(512*512)
+MakeArt(512*512, 256)
